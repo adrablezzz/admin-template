@@ -1,0 +1,30 @@
+@color-active: #2d8cf0;
+@color-hover: #daefff;
+@color-back: #f0f0f0;
+
+body * {
+  margin: 0;
+  padding: 0;
+}
+
+// ts下 iview组件样式修正
+.ivu-dropdown-item {
+  height: 30px;
+  line-height: 30px;
+  padding: 0 15px;
+}
+.ivu-form {
+  width: 100%;
+  :deep(.ivu-form-item) {
+    padding-bottom: 25px;
+  }
+}
+
+.user-select-none{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
