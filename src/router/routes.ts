@@ -1,7 +1,6 @@
 import { RouteRecordRaw } from 'vue-router'
 import Main from '@/views/main'
 
-// 视频子路由
 const mainRoutes:RouteRecordRaw[] = [
   {
     path: '/videoManage',
@@ -23,7 +22,7 @@ const mainRoutes:RouteRecordRaw[] = [
       {
         path: 'videoCheck2',
         name: 'videoCheck2',
-        component: () => import('@/views/videoManage/videoCheck2')
+        component: () => import('@/views/videoManage2/videoCheck2')
       },
     ]
   },

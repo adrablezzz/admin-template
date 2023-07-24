@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useStore } from '@/store'
+import { useStore } from '@/store/index'
 import { useRoute, useRouter } from 'vue-router'
 import { initRoute } from '@/router/config'
 import { getRouteName } from '@/libs/util'

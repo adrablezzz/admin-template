@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': pathResolve('src')
+      '@': pathResolve('src'),
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },

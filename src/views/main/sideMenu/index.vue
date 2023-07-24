@@ -32,7 +32,7 @@
             v-for="menu in subMenu?.children"
             :key="menu.name"
             :name="menu.name"
-            >{{ menu.name }}</DropdownItem
+            >{{ getRouteName(menu.name) }}</DropdownItem
           >
         </DropdownMenu>
       </template>
@@ -72,7 +72,7 @@ const openNames = ref([]);
 const menuRef = ref(null);
 watch(
   () => router.currentRoute.value,
-  (to: string) => {
+  (to: any) => {
     currentRoute.value = to.name;
     currentSubRoute.value = to.matched[0].name;
     openNames.value = [currentSubRoute.value];
@@ -83,7 +83,7 @@ watch(
   { immediate: true }
 );
 // 菜单折叠
-const isCollapsed = inject("isCollapsed");
+const isCollapsed:any = inject("isCollapsed");
 const isShowDrop = ref(false); // 动画完成后展示折叠下拉
 watch(isCollapsed, (cur: boolean, old: boolean) => {
   setTimeout(() => {
@@ -93,7 +93,7 @@ watch(isCollapsed, (cur: boolean, old: boolean) => {
 const menuitemClasses = computed(() => [
   "menu-item",
   isCollapsed.value ? "collapsed-menu" : "",
-  isShowDrop.value ? "hidden-icon" : "",
+  isShowDrop.value ? "show-drop" : "",
 ]);
 const menuItem = computed(() => [isCollapsed.value ? "hide-item" : ""]);
 // 折叠菜单下拉选择
@@ -140,9 +140,14 @@ const handleMenuClick = (e: any): void => {
     font-size: 22px;
   }
 }
-.hidden-icon {
+.show-drop {
   :deep(.ivu-menu-submenu-title-icon) {
     display: none;
+  }
+  .subMenu {
+    :deep(ul.ivu-menu) {
+      display: none;
+    }
   }
 }
 .dropdown-menu {

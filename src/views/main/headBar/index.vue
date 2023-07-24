@@ -57,7 +57,7 @@ const store = useStore();
 const systemInfo: object = store.getSystemInfo;
 const userInfo: object = store.getUserInfo;
 
-const isCollapsed = inject("isCollapsed");
+const isCollapsed:any = inject("isCollapsed");
 const rotateIcon = computed(() => [
   "menu-icon",
   isCollapsed.value ? "rotate-icon" : "",

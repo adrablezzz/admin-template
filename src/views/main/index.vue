@@ -37,32 +37,32 @@
         <Header :style="{ padding: 0 }" class="layout-header-bar">
           <headBar @collapsedSider="collapsedSider"></headBar>
         </Header>
-        <Content
-          style="background: #f5f7f9; min-height: 260px"
-        >
-        <tagNav></tagNav>
-        <router-view v-slot="{ Component }">
-          <!-- <keep-alive> -->
-            <component :is="Component" style="padding:10px"/>
-          <!-- </keep-alive> -->
-        </router-view>
+        <Content style="background: #f5f7f9; min-height: 260px">
+          <tagNav></tagNav>
+          <div style="padding: 10px; height: calc(100% - 40px); overflow: auto">
+            <router-view v-slot="{ Component }">
+              <!-- <keep-alive> -->
+                <component :is="Component" />
+              <!-- </keep-alive> -->
+            </router-view>
+          </div>
         </Content>
       </Layout>
     </Layout>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, provide } from 'vue'
+import { ref, provide } from "vue";
 // 子组件
-import sideMenu from '@/views/main/sideMenu'
-import headBar from '@/views/main/headBar'
-import tagNav from '@/views/main/tagNav'
+import sideMenu from "./sideMenu/index.vue";
+import headBar from "./headBar/index.vue";
+import tagNav from "./tagNav/index.vue";
 
-const isCollapsed = ref(false)
-provide('isCollapsed', isCollapsed)
+const isCollapsed = ref(false);
+provide("isCollapsed", isCollapsed);
 
-const siderRef = ref(null)
+const siderRef = ref(null);
 const collapsedSider = () => {
-  siderRef.value.toggleCollapse()
-}
+  siderRef.value.toggleCollapse();
+};
 </script>

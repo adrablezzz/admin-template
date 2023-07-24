@@ -48,7 +48,8 @@ export default class Request {
     axios(config).then((da:any) => {
       if(da.data.code == 200) {
         resolve(da.data)
-      }else if(da.data.code == 403 || da.data.code == 402) {
+      }else if(da.data.code == 403 || da.data.code == 402 || da.data.code == 3004) {
+        Message.error(da.data.message);
         // 登出
         store.logOut()
         localStorage.artTrainingTagNaveList = []
