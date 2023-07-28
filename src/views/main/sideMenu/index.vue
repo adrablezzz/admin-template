@@ -42,6 +42,7 @@
       v-for="subMenu in mainRoutes"
       :key="subMenu.name"
       :name="subMenu.name"
+      class="subMenu"
     >
       <template #title>
         <Icon :type="getRouteIcon(subMenu.name)"></Icon>
@@ -148,6 +149,11 @@ const handleMenuClick = (e: any): void => {
     :deep(ul.ivu-menu) {
       display: none;
     }
+  }
+}
+.subMenu {
+  :deep(.ivu-menu-submenu-title) {
+    background: #515a6e !important;
   }
 }
 .dropdown-menu {

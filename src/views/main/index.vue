@@ -39,7 +39,7 @@
         </Header>
         <Content style="background: #f5f7f9; min-height: 260px">
           <tagNav></tagNav>
-          <div style="padding: 10px; height: calc(100% - 40px); overflow: auto">
+          <div ref="mainContent" style="padding: 10px; height: calc(100% - 40px); overflow: auto">
             <router-view v-slot="{ Component }">
               <!-- <keep-alive> -->
                 <component :is="Component" />
@@ -52,7 +52,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, provide } from "vue";
+import { ref, provide, onMounted, nextTick } from "vue";
 // 子组件
 import sideMenu from "./sideMenu/index.vue";
 import headBar from "./headBar/index.vue";
@@ -60,9 +60,18 @@ import tagNav from "./tagNav/index.vue";
 
 const isCollapsed = ref(false);
 provide("isCollapsed", isCollapsed);
+const mainHeight = ref(0)
+provide("mainHeight", mainHeight);
 
 const siderRef = ref(null);
 const collapsedSider = () => {
   siderRef.value.toggleCollapse();
 };
+const mainContent = ref(null)
+onMounted(() => {
+  nextTick(() => {
+    let offsetHeight = mainContent.value.offsetHeight
+    mainHeight.value = offsetHeight
+  })
+})
 </script>
