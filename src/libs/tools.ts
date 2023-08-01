@@ -5,7 +5,7 @@ interface Config {
 export const debounce = (func:Function, config: Config | undefined):Function => {
   let timer:any;
   const {wait=500,immediate=false} = config || {}
-  return function () {
+  return function (this:any) {
     let context = this;
     let args = arguments;
 

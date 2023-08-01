@@ -1,6 +1,6 @@
 import HttpRequest from "@/libs/httpJava";
 
-class videoModel extends HttpRequest {
+class VideoModel extends HttpRequest {
   // 获取后台要审核的视频
   getVideoListForBackGround(params:object) {
     return this.commonAjaxJava(
@@ -14,9 +14,9 @@ class videoModel extends HttpRequest {
     return this.commonAjaxJava(
       '/xtBackGround/checkVideo',
       params,
-      {method: 'POST'}
+      {method: 'POST', queryString: true}
     )
   }
 }
 
-export default new videoModel()
+export default new VideoModel()

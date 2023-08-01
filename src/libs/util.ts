@@ -1,13 +1,14 @@
 import {routes} from "@/router/config";
 import hexMd5 from 'js-md5'
+import { RouteRecordName } from 'vue-router'
 
-export const getRouteName = (name: string): string =>
+export const getRouteName = (name: RouteRecordName | undefined = ''): string =>
   routes[name] instanceof Object ? routes[name].name : routes[name];
 
-export const getRouteIcon = (name: string): string =>
+export const getRouteIcon = (name: RouteRecordName | undefined = ''): string =>
   routes[name] instanceof Object ? routes[name].icon : "";
 
-export const getSignValue = (params:object):string => {
+export const getSignValue = (params:{[key:string]:any}):string => {
   let keyAry = []
   let valueAry = []
   for (let key in params) {
@@ -24,7 +25,7 @@ export const getSignValue = (params:object):string => {
 }
 
 // GET请求返回拼接参数
-export const getMethodToData = (data:object):string => {
+export const getMethodToData = (data:{[key:string]:any}):string => {
   let urlStr = "?";
   for (let key in data) {
     if (typeof data[key] === "string") {

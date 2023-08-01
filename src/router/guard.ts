@@ -4,8 +4,8 @@ import { initRoute, mainChildrenRoutes } from './config'
 
 const guard = () => {
   const store = useStore()
-  router.beforeEach((to, from, next) => {
-    let index = store.getRoutesLog.findIndex((r:object) => r.name === initRoute)
+  router.beforeEach((to:any, from, next) => {
+    let index = store.getRoutesLog.findIndex((r:any) => r.name === initRoute)
     if(index === -1) {
       store.addRouteLog({name: initRoute})
     }

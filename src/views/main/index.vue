@@ -58,19 +58,19 @@ import sideMenu from "./sideMenu/index.vue";
 import headBar from "./headBar/index.vue";
 import tagNav from "./tagNav/index.vue";
 
-const isCollapsed = ref(false);
+const isCollapsed = ref<boolean>(false);
 provide("isCollapsed", isCollapsed);
 const mainHeight = ref(0)
 provide("mainHeight", mainHeight);
 
-const siderRef = ref(null);
+const siderRef = ref<any>(null);
 const collapsedSider = () => {
   siderRef.value.toggleCollapse();
 };
-const mainContent = ref(null)
+const mainContent = ref<HTMLDivElement>()
 onMounted(() => {
   nextTick(() => {
-    let offsetHeight = mainContent.value.offsetHeight
+    let offsetHeight = mainContent?.value?.offsetHeight || 0
     mainHeight.value = offsetHeight
   })
 })

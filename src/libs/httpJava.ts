@@ -3,7 +3,6 @@ import axios from 'axios'
 import { getSignValue, getMethodToData } from './util'
 import URL from './javaUrl'
 import { Message } from 'view-ui-plus'
-import router from '@/router'
 import { useStore } from '@/store'
 const store = useStore()
 
@@ -53,7 +52,6 @@ export default class Request {
         // 登出
         store.logOut()
         localStorage.artTrainingTagNaveList = []
-        router.push({name: "login"})
       }else {
         Message.error(da.data.message);
         reject(da.data)

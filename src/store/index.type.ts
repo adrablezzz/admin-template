@@ -3,6 +3,18 @@ interface SystemItem {
   value: string
   href: string
 }
+interface Route {
+  name: string;
+  [other:string]: any
+}
+interface UserInfo {
+  id: number
+  role: number
+  staffId: string
+  truename: string
+  type: number
+  username: string | number
+}
 type State = {
   token: string
   userInfo: {
@@ -28,9 +40,9 @@ type Getters = {
 }
 
 type Actions = {
-  addRouteLog: (route: object) => void
+  addRouteLog: (route: Route) => void
   delRouteLog: (name: string) => number
-  clearRouteLog: () => void
-  login: (token:string, userInfo:object) => void
+  clearRouteLog: (name?:string|any) => void
+  login: (token:string, userInfo:UserInfo) => void
   logOut: () => void
 }

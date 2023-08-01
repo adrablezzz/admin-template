@@ -48,16 +48,15 @@
 import { inject, computed } from "vue";
 import { getRouteName } from "@/libs/util";
 
-import { useRoute, useRouter } from "vue-router";
-const route = useRoute();
-const router = useRouter();
+import { useRoute } from "vue-router";
+const route: any = useRoute();
 
 import { useStore } from "@/store";
 const store = useStore();
-const systemInfo: object = store.getSystemInfo;
-const userInfo: object = store.getUserInfo;
+const systemInfo: any = store.getSystemInfo;
+const userInfo: any = store.getUserInfo;
 
-const isCollapsed:any = inject("isCollapsed");
+const isCollapsed: any = inject("isCollapsed");
 const rotateIcon = computed(() => [
   "menu-icon",
   isCollapsed.value ? "rotate-icon" : "",
@@ -67,12 +66,11 @@ const collapsedSider = (): void => {
   emit("collapsedSider");
 };
 
-const handleDropdown = (name:number):void => {
-  if(name == 0) {
-    store.logOut()
-    router.push({name: 'login'})
+const handleDropdown = (name: number): void => {
+  if (name == 0) {
+    store.logOut();
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

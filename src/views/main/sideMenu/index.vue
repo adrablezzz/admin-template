@@ -69,16 +69,16 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const currentRoute = ref("");
 const currentSubRoute = ref("");
-const openNames = ref([]);
-const menuRef = ref(null);
+const openNames = ref<any>([]);
+const menuRef = ref<any>(null);
 watch(
   () => router.currentRoute.value,
   (to: any) => {
     currentRoute.value = to.name;
     currentSubRoute.value = to.matched[0].name;
-    openNames.value = [currentSubRoute.value];
+    openNames.value[0] = currentSubRoute.value;
     nextTick(() => {
-      menuRef.value.updateOpened();
+      menuRef?.value?.updateOpened();
     });
   },
   { immediate: true }
@@ -86,7 +86,7 @@ watch(
 // 菜单折叠
 const isCollapsed:any = inject("isCollapsed");
 const isShowDrop = ref(false); // 动画完成后展示折叠下拉
-watch(isCollapsed, (cur: boolean, old: boolean) => {
+watch(isCollapsed, (cur: boolean, _old: boolean) => {
   setTimeout(() => {
     isShowDrop.value = cur;
   }, 200);

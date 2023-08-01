@@ -27,7 +27,7 @@
             </Input>
           </FormItem>
           <FormItem>
-            <Button @click="handleSubmit('formDataRef')" long class="login-submit"
+            <Button @click="handleSubmit()" long class="login-submit"
               >登录</Button
             >
           </FormItem>
@@ -64,7 +64,7 @@ const rule = reactive({
   ],
 })
 const formDataRef = ref<any>(null)
-const handleSubmit = (ref: string): void => {
+const handleSubmit = (): void => {
   formDataRef.value.validate((val:boolean) => {
     if(val) {
       let password:string = md5(formData.value.password + "gonganju" + formData.value.password.split("").reverse().join(""))
@@ -74,10 +74,18 @@ const handleSubmit = (ref: string): void => {
         phone: formData.value.user,
         password
       }
+      interface UserInfo {
+        id: number
+        role: number
+        staffId: string
+        truename: string
+        type: number
+        username: string | number
+      }
       userModel.login(params).then((da:any) => {
         let token:string = da.data.javaToken
-        let {id,password,role,staffId,truename,type,username} = da.data.userInfo
-        let userInfo:object = {id,password,role,staffId,truename,type,username}
+        let {id,role,staffId,truename,type,username} = da.data.userInfo
+        let userInfo:UserInfo = {id,role,staffId,truename,type,username}
         store.login(token, userInfo)
         router.push('/')
       })

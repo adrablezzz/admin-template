@@ -9,22 +9,43 @@
         <Button icon="md-refresh" @click="refresh"></Button>
       </Col>
     </Row>
-    <Table 
-      :columns="props.columns" 
-      :data="props.data" border 
-      stripe 
-      size="small" 
+    <Table
+      :columns="props.columns"
+      :data="props.data"
+      border
+      :stripe="props.stripe"
+      size="small"
       :max-height="maxHeight"
+      :row-class-name="props.rowClassName"
       @on-selection-change="onSelectionChange"
-      ></Table>
-    <Row v-if="props.pageSize !== -1" style="margin: 10px 0;" class="page-row">
+    ></Table>
+    <Row style="margin: 10px 0" class="page-row">
       <Col :span="12">
-        {{ `显示第 ${props.total == 0 ? 0 : (props.page - 1) * props.pageSize + 1} 到第 ${props.pageSize * props.page < props.total ? props.pageSize * props.page : props.total} 条记录，总共 ${props.total} 条记录` }}
+        <span v-if="props.pageSize == -1">{{
+          `显示第 1 到第 ${props.data.length} 条记录，总共 ${props.data.length} 条记录`
+        }}</span>
+        <span v-else>{{
+          `显示第 ${
+            props.total == 0 ? 0 : (props.page - 1) * props.pageSize + 1
+          } 到第 ${
+            props.pageSize * props.page < props.total
+              ? props.pageSize * props.page
+              : props.total
+          } 条记录，总共 ${props.total} 条记录`
+        }}</span>
       </Col>
-      <Col :span="12" align="right">
-        <Page transfer :total="props.total" :page-size="props.pageSize" :current="props.page" :page-size-opts="props.pageSizeOpts"
-          show-elevator show-sizer style="display:inline-block;overflow:hidden" class="page" 
-          @on-change="pageChange" @on-page-size-change="sizeChange"
+      <Col v-if="props.pageSize !== -1" :span="12" align="right">
+        <Page
+          :total="props.total"
+          :page-size="props.pageSize"
+          :current="props.page"
+          :page-size-opts="props.pageSizeOpts"
+          show-elevator
+          show-sizer
+          style="display: inline-block; overflow: hidden"
+          class-name="page"
+          @on-change="pageChange"
+          @on-page-size-change="sizeChange"
         />
       </Col>
     </Row>
@@ -36,44 +57,47 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, inject, computed } from 'vue'
+import { onMounted, inject, computed, ref } from "vue";
 interface Props {
-  columns: object[];
-  data: object[];
-  isSpin: boolean,
-  total?: number,
-  page?: number,
-  pageSize?: number,
-  pageSizeOpts?: number[],
+  columns: { [key: string]: any }[];
+  data: { [key: string]: any }[];
+  isSpin: boolean;
+  total?: number;
+  page?: number;
+  pageSize?: number;
+  pageSizeOpts?: number[];
+  stripe?: boolean
+  rowClassName?: (row:any, index:number) => string
 }
-const mainHeight = inject('mainHeight')
-const maxHeight = computed(() => mainHeight.value - 120)
+const mainHeight = inject("mainHeight", ref(0));
+const maxHeight = computed(() => mainHeight.value - 120);
 const props = withDefaults(defineProps<Props>(), {
-  columns: [],
-  data: [],
+  columns: () => [],
+  data: () => [],
   isSpin: false,
   total: 0,
   page: 1,
   pageSize: -1,
-  pageSizeOpts: [10, 50, 100],
+  pageSizeOpts: () => [10, 50, 100],
+  stripe: false
 });
 const emit = defineEmits(["refresh", "onSelectionChange"]);
-const refresh = (params?:any): void => {
+const refresh = (params?: { page?: number; pageSize?: number }): void => {
   emit("refresh", params);
 };
-const pageChange = (page:number): void => {
-  refresh({page})
-}
-const sizeChange = (pageSize:number): void => {
-  refresh({pageSize})
-}
-const onSelectionChange = (selection:object[]): void => {
-  emit("onSelectionChange", selection)
-}
+const pageChange = (page: number): void => {
+  refresh({ page });
+};
+const sizeChange = (pageSize: number): void => {
+  refresh({ pageSize });
+};
+const onSelectionChange = (selection: {[key:string]:any}[]): void => {
+  emit("onSelectionChange", selection);
+};
 
 onMounted(() => {
-  refresh()
-})
+  refresh();
+});
 </script>
 
 <style lang="less" scoped>
@@ -90,9 +114,15 @@ onMounted(() => {
       :deep(*) {
         font-size: 12px;
       }
+      :deep(.ivu-select-dropdown) {
+        .ivu-select-item {
+          font-size: 12px !important;
+        }
+      }
     }
   }
 }
+
 .demo-spin-icon-load {
   animation: ani-demo-spin 1s linear infinite;
 }

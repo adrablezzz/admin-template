@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, computed } from 'vue';
+import { inject, computed, ref } from 'vue';
 import logo from '@/assets/img/logo.png'
 import logoMin from '@/assets/img/logo-min.png'
-const isCollapsed = inject('isCollapsed')
+const isCollapsed = inject('isCollapsed', ref(false))
 const imgSrc = computed(() => isCollapsed.value ? logoMin : logo)
 </script>
 

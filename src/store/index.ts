@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { initRoute } from '../router/config'
 import Cookies from 'js-cookie'
+import router from '@/router'
 
 const SYSTEM:string = 'lawSchoolAdmin'
 const ROUTESLOG:string = `${SYSTEM}RoutesLog`
 export const useStore = defineStore<string, State, Getters, Actions>('UseStoreId', {
   state: () => ({
-    token: '',
+    token: Cookies.get('token') || '',
     userInfo: {
       id: 0,
       role: 0,
@@ -32,7 +33,7 @@ export const useStore = defineStore<string, State, Getters, Actions>('UseStoreId
       if(state.userInfo.id) {
         return state.userInfo
       }else if(Cookies.get('userInfo')) {
-        return JSON.parse(Cookies.get('userInfo'))
+        return JSON.parse(Cookies.get('userInfo') || '')
       }
       return {}
     },
@@ -48,17 +49,19 @@ export const useStore = defineStore<string, State, Getters, Actions>('UseStoreId
       
       return state.routesLog
     },
-    getToken: (state: any) => state.token || Cookies.get('token') || ''
+    getToken: (state: any) => {
+      return state.token || ''
+    }
   },
   actions: {
-    addRouteLog(route:object) {
-      if(this.routesLog.findIndex((r:object) => r.name == route.name) === -1) {
+    addRouteLog(route:Route) {
+      if(this.routesLog.findIndex((r:any) => r.name == route.name) === -1) {
         this.routesLog.push(route)
         sessionStorage.setItem(ROUTESLOG, JSON.stringify(this.routesLog))
       }
     },
     delRouteLog(name: string):number {
-      let index:number = this.routesLog.findIndex((r:object) => r.name == name)
+      let index:number = this.routesLog.findIndex((r:any) => r.name == name)
       if(index !== -1) {
         this.routesLog.splice(index, 1)
         sessionStorage.setItem(ROUTESLOG, JSON.stringify(this.routesLog))
@@ -66,14 +69,14 @@ export const useStore = defineStore<string, State, Getters, Actions>('UseStoreId
       return index
     },
     clearRouteLog(name?:string) {
-      this.routesLog = this.routesLog.filter((r:object) => r.name == initRoute || r.name == name)
+      this.routesLog = this.routesLog.filter((r:any) => r.name == initRoute || r.name == name)
       sessionStorage.setItem(ROUTESLOG, JSON.stringify(this.routesLog))
     },
-    login(token:string, userInfo:object) {
+    login(token:string, userInfo:UserInfo) {
       Cookies.set('token', token, {expires: 7})
       Cookies.set('userInfo', JSON.stringify(userInfo), {expires: 7})
-      this.token = token
-      this.userInfo = userInfo
+      this.token = token;
+      (this.userInfo as UserInfo) = userInfo
     },
     logOut() {
       Cookies.remove('token')
@@ -87,6 +90,8 @@ export const useStore = defineStore<string, State, Getters, Actions>('UseStoreId
         type: 0,
         username: "",
       }
+      localStorage.artTrainingTagNaveList = []
+      router.push({ name: 'login'})
     }
   }
 })

@@ -1,6 +1,6 @@
 import mainRoutes from './routes'
 
-const routes:object =  {
+const routes:any =  {
   'videoManage': {
     name: '视频管理',
     icon: 'logo-youtube'
