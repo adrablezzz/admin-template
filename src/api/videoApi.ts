@@ -17,6 +17,62 @@ class VideoModel extends HttpRequest {
       {method: 'POST', queryString: true}
     )
   }
+  // 我的作品
+  getMyVideoList(params:object) {
+    return this.commonAjaxJava(
+      '/xtVideo/getMyVideoList',
+      params,
+      {method: 'GET', newGet: true}
+    )
+  }
+  // 我的草稿
+  getMyDraftVideoList(params:object) {
+    return this.commonAjaxJava(
+      '/xtVideo/getMyDraftVideoList',
+      params,
+      {method: 'GET', newGet: true}
+    )
+  }
+  // 我的私密
+  getMySecretVideoList(params:object) {
+    return this.commonAjaxJava(
+      '/xtVideo/getMySecretVideoList',
+      params,
+      {method: 'GET', newGet: true}
+    )
+  }
+  // 我的点赞
+  getMyLikeVideoList(params:object) {
+    return this.commonAjaxJava(
+      '/xtVideoLike/getMyLikeVideoList',
+      params,
+      {method: 'GET', newGet: true}
+    )
+  }
+  // 我的收藏
+  getMyCollectVideoList(params:object) {
+    return this.commonAjaxJava(
+      '/xtVideoCollect/getMyCollectVideoList',
+      params,
+      {method: 'GET', newGet: true}
+    )
+  }
+  // 发布视频
+  insertXtVideo(params:object) {
+    return this.commonAjaxJava(
+      '/xtVideo/insertXtVideo',
+      params,
+      {method: 'POST'}
+    )
+  }
+  // 编辑
+  updateXtVideo(params:object) {
+    return this.commonAjaxJava(
+      '/xtVideo/updateXtVideo',
+      params,
+      {method: 'POST'}
+    )
+  }
 }
 
 export default new VideoModel()

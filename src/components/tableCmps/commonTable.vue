@@ -4,13 +4,13 @@
       <Col span="12">
         <slot name="leftBar"></slot>
       </Col>
-      <Col span="12" align="right">
+      <Col span="12" style="display: flex;justify-content: flex-end;">
         <slot name="rightBar"></slot>
         <Button icon="md-refresh" @click="refresh"></Button>
       </Col>
     </Row>
     <Table
-      :columns="props.columns"
+      :columns="columns"
       :data="props.data"
       border
       :stripe="props.stripe"
@@ -66,8 +66,8 @@ interface Props {
   page?: number;
   pageSize?: number;
   pageSizeOpts?: number[];
-  stripe?: boolean
-  rowClassName?: (row:any, index:number) => string
+  stripe?: boolean;
+  rowClassName?: (row: any, index: number) => string;
 }
 const mainHeight = inject("mainHeight", ref(0));
 const maxHeight = computed(() => mainHeight.value - 120);
@@ -79,9 +79,32 @@ const props = withDefaults(defineProps<Props>(), {
   page: 1,
   pageSize: -1,
   pageSizeOpts: () => [10, 50, 100],
-  stripe: false
+  stripe: false,
 });
-const emit = defineEmits(["refresh", "onSelectionChange"]);
+const columns = computed(() =>
+  props.columns.map((item) => {
+    if (item.action) {
+      item.render = (h: Function, params: any) => {
+        let key = params.column.key;
+        return h(
+          "span",
+          {
+            style: {
+              color: "#2d8cf0",
+              cursor: "pointer",
+            },
+            onclick: () => {
+              emit("onAction", params.row);
+            },
+          },
+          params.row[key]
+        );
+      };
+    }
+    return item;
+  })
+);
+const emit = defineEmits(["refresh", "onSelectionChange", "onAction"]);
 const refresh = (params?: { page?: number; pageSize?: number }): void => {
   emit("refresh", params);
 };
@@ -91,7 +114,7 @@ const pageChange = (page: number): void => {
 const sizeChange = (pageSize: number): void => {
   refresh({ pageSize });
 };
-const onSelectionChange = (selection: {[key:string]:any}[]): void => {
+const onSelectionChange = (selection: { [key: string]: any }[]): void => {
   emit("onSelectionChange", selection);
 };
 
@@ -120,21 +143,6 @@ onMounted(() => {
         }
       }
     }
-  }
-}
-
-.demo-spin-icon-load {
-  animation: ani-demo-spin 1s linear infinite;
-}
-@keyframes ani-demo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(180deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 </style>

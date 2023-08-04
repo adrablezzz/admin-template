@@ -10,24 +10,24 @@
       stripe
       @refresh="refresh"
       @onSelectionChange="onSelectionChange"
+      @onAction="onAction"
     >
       <template #leftBar>
         <Button
-          type="primary"
           style="margin-right: 5px"
-          v-debounce:click="handlePass"
-          >批量审核</Button
+          v-debounce:click="handleAdd"
+          >发布视频</Button
         >
       </template>
       <template #rightBar>
         <Select
-          v-model="status"
+          v-model="type"
           style="width: 100px; margin-right: 5px"
           transfer
-          @on-change="statusChange"
+          @on-change="typeChange"
         >
           <Option
-            v-for="item in statusGroup"
+            v-for="item in typeGroup"
             :key="item.value"
             :value="item.value"
           >
@@ -37,30 +37,36 @@
       </template>
     </commonTable>
     <videoPreview ref="videoPreviewRef"></videoPreview>
-    <videoCheckModal
-      ref="videoCheckModalRef"
-      @refresh="refresh"
-    ></videoCheckModal>
+    <myWorksModal ref="myWorksModalRef" @refresh="refresh"></myWorksModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import commonTable from "@/components/tableCmps/commonTable.vue";
 import videoPreview from "@/components/mediaCmps/videoPreview.vue";
-import videoCheckModal from "./components/videoCheckModal.vue";
-import { Message } from "view-ui-plus";
+import myWorksModal from "./components/myWorksModal.vue";
 import { ref, reactive } from "vue";
 import videoModel from "@/api/videoApi";
 
-const status = ref(0);
-const statusGroup = ref([
-  { value: 0, label: "审核中" },
-  { value: 1, label: "审核通过" },
-  { value: 2, label: "审核不通过" },
-]);
-const statusChange = (): void => {
+enum Method {
+  getMyVideoList = 'getMyVideoList',
+  getMyDraftVideoList = 'getMyDraftVideoList',
+  getMySecretVideoList = 'getMySecretVideoList',
+  getMyLikeVideoList = 'getMyLikeVideoList',
+  getMyCollectVideoList = 'getMyCollectVideoList',
+}
+const type = ref(Method.getMyVideoList)
+const typeGroup = ref([
+  {value: 'getMyVideoList', label: '我的作品'},
+  {value: 'getMyDraftVideoList', label: '我的草稿'},
+  {value: 'getMySecretVideoList', label: '我的私密'},
+  {value: 'getMyLikeVideoList', label: '我的点赞'},
+  {value: 'getMyCollectVideoList', label: '我的收藏'},
+])
+const typeChange = (): void => {
   refresh()
 }
+
 interface Item {
   id: number;
   status: number;
@@ -72,9 +78,12 @@ interface Item {
   cover: string | null;
   [other: string]: any;
 }
+
 const params = ref({
   filters: {},
-  orderParams: {},
+  orderParams: {
+    // orderParams: [{ orderColumn: "videoId", order: "ASC" }],
+  },
   page: 1,
   pageSize: 10,
 });
@@ -91,6 +100,7 @@ const columns = reactive([
     title: "标题",
     key: "videoTitle",
     align: "center",
+    action: true
   },
   {
     title: "描述",
@@ -115,25 +125,21 @@ const columns = reactive([
     render: (h: Function, params: any) => {
       let { key } = params.column;
       let value = params.row[key];
-      let num: any = {
+      let emun: any = {
         "-1": "草稿",
         0: "审核中",
         1: "审核通过",
         2: "审核不通过",
       };
-      const colors: { [key: string]: string } = {
-        1: "#19be6b",
-        2: "#f00",
-      };
-      return h(
-        "span",
-        {
-          style: {
-            color: colors[value],
-          },
-        },
-        num[value]
-      );
+      const colors: {[key:string]:string} = {
+        1: '#19be6b',
+        2: '#f00'
+      }
+      return h("span", {
+        style: {
+          color: colors[value]
+        }
+      }, emun[value]);
     },
   },
   {
@@ -161,16 +167,14 @@ const columns = reactive([
 const data = ref<any>([]);
 const selection = ref<Item[]>([]);
 
-const videoCheckModalRef = ref<InstanceType<typeof videoCheckModal>>();
-const handlePass = (): void => {
-  if (selection.value.length == 0) {
-    Message.error("请至少选择一项");
-    return;
-  } else {
-    const ids = selection.value.map((item: Item) => item.id);
-    videoCheckModalRef.value?.open(ids);
-  }
+const myWorksModalRef = ref<InstanceType<typeof myWorksModal>>();
+const handleAdd = (): void => {
+  myWorksModalRef.value?.open()
 };
+const onAction = (row: any): void => {
+  myWorksModalRef.value?.open(row)
+}
+
 interface Pars {
   page: number;
   pageSize: number;
@@ -180,34 +184,10 @@ const refresh = (pars?: Pars | undefined): void => {
   page && (params.value.page = page);
   pageSize && (params.value.pageSize = pageSize);
 
-  params.value.filters = {
-    groupOp: "OR",
-    rules: [
-      {
-        groupOp: "AND",
-        rules: [
-          {
-            groupOp: "AND",
-            field: "status",
-            op: "eq",
-            data: status.value,
-            ptype: "number",
-          },
-        ],
-      },
-    ],
-  },
   isSpin.value = true;
-  videoModel.getVideoListForBackGround(params.value).then((da: any) => {
-    data.value = (da.data.list || []).map((item: Item) => {
-      return {
-        ...item,
-        _disabled: item.status != 0,
-      };
-    });
-    total.value = da.data.totalCount;
-    params.value.page = da.data.currPage;
-    params.value.pageSize = da.data.pageSize;
+  videoModel[type.value](params.value).then((da: any) => {
+    data.value = da.data.items || []
+    total.value = da.data.count;
     isSpin.value = false;
   });
 };

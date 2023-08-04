@@ -10,7 +10,12 @@ const mainRoutes:RouteRecordRaw[] = [
       {
         path: 'videoCheck',
         name: 'videoCheck',
-        component: () => import('@/views/videoManage/videoCheck')
+        component: () => import('@/views/videoManage/videoCheck.vue')
+      },
+      {
+        path: 'myWorks',
+        name: 'myWorks',
+        component: () => import('@/views/videoManage/myWorks.vue')
       },
     ]
   },
@@ -22,7 +27,7 @@ const mainRoutes:RouteRecordRaw[] = [
       {
         path: 'videoCheck2',
         name: 'videoCheck2',
-        component: () => import('@/views/videoManage2/videoCheck2')
+        component: () => import('@/views/videoManage2/videoCheck2.vue')
       },
     ]
   },

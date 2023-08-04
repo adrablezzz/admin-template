@@ -13,12 +13,12 @@ body {
   line-height: 30px;
   padding: 0 15px;
 }
-.ivu-form {
-  width: 100%;
-  :deep(.ivu-form-item) {
-    padding-bottom: 25px;
-  }
-}
+// .ivu-form {
+//   width: 100%;
+//   :deep(.ivu-form-item) {
+//     // padding-bottom: 25px;
+//   }
+// }
 
 .user-select-none{
   -webkit-touch-callout: none;
@@ -27,4 +27,20 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+// loading 样式
+.demo-spin-icon-load {
+  animation: ani-demo-spin 1s linear infinite;
+}
+@keyframes ani-demo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

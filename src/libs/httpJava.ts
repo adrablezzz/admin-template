@@ -10,6 +10,7 @@ interface ExtendData {
   method?: string
   queryString?: boolean
   newGet?: boolean
+  contentType?: string
 }
 export default class Request {
   commonAjaxJava(url:string, params:object|undefined={}, extendData:object|undefined): Promise<any> {
@@ -20,7 +21,11 @@ export default class Request {
   _commonAjax(resolve:any, reject:any, url:string, params:object, extendData:ExtendData|undefined):void {
     const sign = getSignValue(Object.assign(params))
     const token = Cookies.get('token')
-    let newHeader:object = {
+    interface NewHeader {
+      token: string | undefined
+      sign: string | undefined
+    }
+    let newHeader: NewHeader = {
       token: token,
       sign
     }

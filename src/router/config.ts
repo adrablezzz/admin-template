@@ -6,6 +6,7 @@ const routes:any =  {
     icon: 'logo-youtube'
   },
     'videoCheck': '视频审核',
+    'myWorks': '我的视频',
   
   'videoManage2': {
     name: '视频管理2',

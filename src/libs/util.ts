@@ -3,7 +3,7 @@ import hexMd5 from 'js-md5'
 import { RouteRecordName } from 'vue-router'
 
 export const getRouteName = (name: RouteRecordName | undefined = ''): string =>
-  routes[name] instanceof Object ? routes[name].name : routes[name];
+  routes[name] instanceof Object ? (routes[name].name || name) : (routes[name] || name);
 
 export const getRouteIcon = (name: RouteRecordName | undefined = ''): string =>
   routes[name] instanceof Object ? routes[name].icon : "";
