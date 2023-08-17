@@ -84,6 +84,11 @@ const handleDropdown = (name: number): void => {
     align-items: center;
     .collapsed-icon {
       margin-right: 50px;
+      transform: rotate(0deg);
+      transition: all .3s;
+    }
+    .rotate-icon {
+      transform: rotate(90deg);
     }
   }
   .right {

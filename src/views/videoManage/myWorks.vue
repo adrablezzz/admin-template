@@ -186,7 +186,7 @@ const handleDel = (): void => {
   }
   Modal.confirm({
     title: '提示',
-    content: '是否删除改视频',
+    content: '是否删除视频',
     onOk: () => {
       let ids = selection.value.map(item => item.id)
       videoModel.deleteXtVideo(ids).then(_da => {
