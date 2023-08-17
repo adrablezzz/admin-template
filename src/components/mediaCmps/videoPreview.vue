@@ -46,6 +46,8 @@ const close = () => {
     justify-content: center;
     align-items: center;
     .video {
+      max-height: 100vh;
+      max-width: 100vw;
       cursor: pointer;
       object-fit: contain;
       &:focus {

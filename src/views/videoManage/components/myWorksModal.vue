@@ -24,7 +24,13 @@
         ></Input>
       </FormItem>
       <FormItem label="主题" prop="themeInfo">
-        <Input v-model="formItem.themeInfo" placeholder="填写视频主题"></Input>
+        <!-- <Input v-model="formItem.themeInfo" placeholder="填写视频主题"></Input> -->
+        <AutoComplete
+          v-model="formItem.themeInfo"
+          :data="themeList"
+          @on-change="onChange"
+          placeholder="填写视频主题"
+        ></AutoComplete>
       </FormItem>
       <FormItem label="视频" prop="videoUrl">
         <div v-if="formItem.videoUrl">
@@ -121,7 +127,7 @@ const formItem = ref<FormItem>({
   checkUserId: 0,
   cover: "",
   crtTm: "",
-  crtUserId: store.getUserInfo?.id || 0,
+  crtUserId: (store.getUserInfo as any)?.id || 0,
   deleteFlag: 0,
   id: 0,
   status: 0,
@@ -159,6 +165,7 @@ const open = (row?: any): void => {
     isEdit.value = false;
     formFieldRef.value.resetFields();
   }
+  getThemeList()
   isModal.value = true;
 };
 defineExpose({ open });
@@ -193,18 +200,28 @@ const handleSubmit = async () => {
           cover,
           videoUrl,
         };
-        videoModel.insertXtVideo(params).then((_da) => {
-          isSpin.value = false;
-          Message.success("发布成功");
-          isModal.value = false;
-          emit("refresh");
-        });
+        if (isEdit.value) {
+          videoModel.updateXtVideo(params).then((_da) => {
+            isSpin.value = false;
+            Message.success("修改成功");
+            emit("refresh");
+            isModal.value = false;
+          });
+        } else {
+          videoModel.insertXtVideo(params).then((_da) => {
+            isSpin.value = false;
+            Message.success("发布成功");
+            isModal.value = false;
+            emit("refresh");
+          });
+        }
       });
     });
   }
 };
+
+const videoRef = ref<InstanceType<typeof HTMLVideoElement>>();
 const getCoverFile = (callback: Function) => {
-  const videoRef = ref<InstanceType<typeof HTMLVideoElement>>();
   let currentTime: number | undefined = videoRef.value?.currentTime;
   getVideoBase64(
     formItem.value.videoUrl,
@@ -243,10 +260,50 @@ const handleBeforeUpload = (file: File) => {
   };
   return false;
 };
+
+// 主题搜索模块
+const onChange = (query: string) => {
+  console.log(query)
+  getThemeList(query)
+};
+interface ThemeItem {
+  id: number | string;
+  title: string;
+  [key: string]: any;
+}
+const themeList = ref<string[]>([]);
+const getThemeList = (query?: string) => {
+  const params = {
+    filters: {
+      groupOp: "OR",
+      rules: [
+        {
+          groupOp: "AND",
+          rules: [
+            {
+              groupOp: "AND",
+              field: "title",
+              op: "cn",
+              data: query || "",
+              ptype: "string",
+            },
+          ],
+        },
+      ],
+    },
+    orderParams: {},
+    page: 1,
+    pageSize: 10,
+  };
+  videoModel.getThemeSearchList(params).then((da: any) => {
+    themeList.value = (da.data.list || []).map((item:ThemeItem) => item.title);
+  });
+};
 </script>
 <style lang="less" scoped>
 .video {
-  width: 100%;
+  max-width: 100%;
+  max-height: 400px;
   object-fit: contain;
   &:focus {
     outline: none;

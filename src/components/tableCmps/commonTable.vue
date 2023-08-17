@@ -83,7 +83,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const columns = computed(() =>
   props.columns.map((item) => {
-    if (item.action) {
+    let action = item?.action
+    if (item.action === true) {
       item.render = (h: Function, params: any) => {
         let key = params.column.key;
         return h(
@@ -100,6 +101,8 @@ const columns = computed(() =>
           params.row[key]
         );
       };
+    } else if(action === false) {
+      delete item.render
     }
     return item;
   })

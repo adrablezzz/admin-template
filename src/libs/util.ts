@@ -1,6 +1,7 @@
 import {routes} from "@/router/config";
 import hexMd5 from 'js-md5'
 import { RouteRecordName } from 'vue-router'
+import circularJSON from 'circular-json'
 
 export const getRouteName = (name: RouteRecordName | undefined = ''): string =>
   routes[name] instanceof Object ? (routes[name].name || name) : (routes[name] || name);
@@ -32,7 +33,7 @@ export const getMethodToData = (data:{[key:string]:any}):string => {
       // 如果传入参数包含字符串则执行此步骤
       urlStr += key + "=" + data[key] + "&";
     } else {
-      urlStr += key + "=" + encodeURIComponent(JSON.stringify(data[key])) + "&";
+      urlStr += key + "=" + encodeURIComponent(circularJSON.stringify(data[key])) + "&";
     }
   }
   const newUrl = urlStr.substring(0, urlStr.length - 1);

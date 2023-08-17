@@ -1,5 +1,5 @@
 <template>
-  <div id="video-check">
+  <div>
     <commonTable
       :columns="columns"
       :data="data"
@@ -17,6 +17,12 @@
           style="margin-right: 5px"
           v-debounce:click="handleAdd"
           >发布视频</Button
+        >
+        <Button
+          v-show="canEdit"
+          style="margin-right: 5px"
+          v-debounce:click="handleDel"
+          >删除视频</Button
         >
       </template>
       <template #rightBar>
@@ -45,8 +51,9 @@
 import commonTable from "@/components/tableCmps/commonTable.vue";
 import videoPreview from "@/components/mediaCmps/videoPreview.vue";
 import myWorksModal from "./components/myWorksModal.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, computed} from "vue";
 import videoModel from "@/api/videoApi";
+import { Message, Modal } from "view-ui-plus";
 
 enum Method {
   getMyVideoList = 'getMyVideoList',
@@ -88,8 +95,8 @@ const params = ref({
   pageSize: 10,
 });
 const total = ref(0);
-
 const isSpin = ref(false);
+const canEdit = computed(() => ['getMyVideoList', 'getMyDraftVideoList', 'getMySecretVideoList'].includes(type.value))
 const columns = reactive([
   {
     type: "selection",
@@ -100,7 +107,7 @@ const columns = reactive([
     title: "标题",
     key: "videoTitle",
     align: "center",
-    action: true
+    action: canEdit
   },
   {
     title: "描述",
@@ -156,6 +163,7 @@ const columns = reactive([
           height: "60px",
           cursor: "pointer",
           verticalAlign: "bottom",
+          'object-fit': 'cover'
         },
         onclick() {
           preView(params.row);
@@ -171,6 +179,23 @@ const myWorksModalRef = ref<InstanceType<typeof myWorksModal>>();
 const handleAdd = (): void => {
   myWorksModalRef.value?.open()
 };
+const handleDel = (): void => {
+  if(selection.value.length == 0) {
+    Message.error('请至少选择一条视频')
+    return
+  }
+  Modal.confirm({
+    title: '提示',
+    content: '是否删除改视频',
+    onOk: () => {
+      let ids = selection.value.map(item => item.id)
+      videoModel.deleteXtVideo(ids).then(_da => {
+        Message.success('删除成功')
+        refresh()
+      })
+    }
+  })
+}
 const onAction = (row: any): void => {
   myWorksModalRef.value?.open(row)
 }

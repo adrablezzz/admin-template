@@ -7,6 +7,7 @@ const routes:any =  {
   },
     'videoCheck': '视频审核',
     'myWorks': '我的视频',
+    'allVideos': '全部视频',
   
   'videoManage2': {
     name: '视频管理2',

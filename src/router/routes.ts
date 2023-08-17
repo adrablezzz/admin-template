@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
-import Main from '@/views/main'
+import Main from '@/views/main/index.vue'
 
 const mainRoutes:RouteRecordRaw[] = [
   {
@@ -16,6 +16,11 @@ const mainRoutes:RouteRecordRaw[] = [
         path: 'myWorks',
         name: 'myWorks',
         component: () => import('@/views/videoManage/myWorks.vue')
+      },
+      {
+        path: 'allVideos',
+        name: 'allVideos',
+        component: () => import('@/views/videoManage/allVideos.vue')
       },
     ]
   },

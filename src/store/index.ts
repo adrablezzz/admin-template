@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { initRoute } from '../router/config'
 import Cookies from 'js-cookie'
 import router from '@/router'
+import circularJSON from 'circular-json'
 
 const SYSTEM:string = 'lawSchoolAdmin'
 const ROUTESLOG:string = `${SYSTEM}RoutesLog`
@@ -57,24 +58,24 @@ export const useStore = defineStore<string, State, Getters, Actions>('UseStoreId
     addRouteLog(route:Route) {
       if(this.routesLog.findIndex((r:any) => r.name == route.name) === -1) {
         this.routesLog.push(route)
-        sessionStorage.setItem(ROUTESLOG, JSON.stringify(this.routesLog))
+        sessionStorage.setItem(ROUTESLOG, circularJSON.stringify(this.routesLog))
       }
     },
     delRouteLog(name: string):number {
       let index:number = this.routesLog.findIndex((r:any) => r.name == name)
       if(index !== -1) {
         this.routesLog.splice(index, 1)
-        sessionStorage.setItem(ROUTESLOG, JSON.stringify(this.routesLog))
+        sessionStorage.setItem(ROUTESLOG, circularJSON.stringify(this.routesLog))
       }
       return index
     },
     clearRouteLog(name?:string) {
       this.routesLog = this.routesLog.filter((r:any) => r.name == initRoute || r.name == name)
-      sessionStorage.setItem(ROUTESLOG, JSON.stringify(this.routesLog))
+      sessionStorage.setItem(ROUTESLOG, circularJSON.stringify(this.routesLog))
     },
     login(token:string, userInfo:UserInfo) {
       Cookies.set('token', token, {expires: 7})
-      Cookies.set('userInfo', JSON.stringify(userInfo), {expires: 7})
+      Cookies.set('userInfo', circularJSON.stringify(userInfo), {expires: 7})
       this.token = token;
       (this.userInfo as UserInfo) = userInfo
     },
@@ -90,7 +91,7 @@ export const useStore = defineStore<string, State, Getters, Actions>('UseStoreId
         type: 0,
         username: "",
       }
-      localStorage.artTrainingTagNaveList = []
+      localStorage.tzBackManageTagNaveList = []
       router.push({ name: 'login'})
     }
   }

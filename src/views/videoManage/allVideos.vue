@@ -15,52 +15,24 @@
         <Button
           type="primary"
           style="margin-right: 5px"
-          v-debounce:click="handlePass"
-          >批量审核</Button
+          v-debounce:click="handleDel"
+          >批量删除</Button
         >
       </template>
       <template #rightBar>
-        <Select
-          v-model="status"
-          style="width: 100px; margin-right: 5px"
-          transfer
-          @on-change="statusChange"
-        >
-          <Option
-            v-for="item in statusGroup"
-            :key="item.value"
-            :value="item.value"
-          >
-            {{ item.label }}
-          </Option>
-        </Select>
       </template>
     </commonTable>
     <videoPreview ref="videoPreviewRef"></videoPreview>
-    <videoCheckModal
-      ref="videoCheckModalRef"
-      @refresh="refresh"
-    ></videoCheckModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import commonTable from "@/components/tableCmps/commonTable.vue";
 import videoPreview from "@/components/mediaCmps/videoPreview.vue";
-import videoCheckModal from "./components/videoCheckModal.vue";
-import { Message } from "view-ui-plus";
+import { Message, Modal } from "view-ui-plus";
 import { ref, reactive } from "vue";
 import videoModel from "@/api/videoApi";
 
-const status = ref(0);
-const statusGroup = ref([
-  { value: 0, label: "审核中" },
-  { value: 1, label: "审核通过" },
-  { value: 2, label: "审核不通过" },
-]);
-const statusChange = (): void => {
-  refresh()
-}
 interface Item {
   id: number;
   status: number;
@@ -162,14 +134,22 @@ const columns = reactive([
 const data = ref<any>([]);
 const selection = ref<Item[]>([]);
 
-const videoCheckModalRef = ref<InstanceType<typeof videoCheckModal>>();
-const handlePass = (): void => {
+const handleDel = (): void => {
   if (selection.value.length == 0) {
     Message.error("请至少选择一项");
     return;
   } else {
-    const ids = selection.value.map((item: Item) => item.id);
-    videoCheckModalRef.value?.open(ids);
+    Modal.confirm({
+      title: '提示',
+      content: '是否删除？',
+      onOk:() => {
+        const ids = selection.value.map((item: Item) => item.id);
+        videoModel.deleteXtVideo(ids).then(() => {
+          Message.success('删除成功')
+          refresh()
+        })
+      }
+    })
   }
 };
 interface Pars {
@@ -181,29 +161,12 @@ const refresh = (pars?: Pars | undefined): void => {
   page && (params.value.page = page);
   pageSize && (params.value.pageSize = pageSize);
 
-  params.value.filters = {
-    groupOp: "OR",
-    rules: [
-      {
-        groupOp: "AND",
-        rules: [
-          {
-            groupOp: "AND",
-            field: "status",
-            op: "eq",
-            data: status.value,
-            ptype: "number",
-          },
-        ],
-      },
-    ],
-  },
   isSpin.value = true;
   videoModel.getVideoListForBackGround(params.value).then((da: any) => {
     data.value = (da.data?.list || []).map((item: Item) => {
       return {
         ...item,
-        _disabled: item.status != 0,
+        // _disabled: item.status != 0,
       };
     });
     total.value = da.data?.totalCount || 0;

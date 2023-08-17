@@ -27,7 +27,7 @@
             </Input>
           </FormItem>
           <FormItem>
-            <Button @click="handleSubmit()" long class="login-submit"
+            <Button v-debounce="handleSubmit" long class="login-submit"
               >登录</Button
             >
           </FormItem>
@@ -38,15 +38,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
-import userModel from '@/api/userApi'
-import md5 from 'js-md5'
-import { useStore } from '@/store'
-const store = useStore()
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { ref, reactive, onMounted } from "vue";
+import userModel from "@/api/userApi";
+import md5 from "js-md5";
+import { useStore } from "@/store";
+const store = useStore();
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-const formData = ref({ user: "", password: "" })
+const formData = ref({ user: "", password: "" });
 const rule = reactive({
   user: [
     {
@@ -62,36 +62,54 @@ const rule = reactive({
       trigger: "change",
     },
   ],
-})
-const formDataRef = ref<any>(null)
+});
+const formDataRef = ref<any>(null);
 const handleSubmit = (): void => {
-  formDataRef.value.validate((val:boolean) => {
-    if(val) {
-      let password:string = md5(formData.value.password + "gonganju" + formData.value.password.split("").reverse().join(""))
+  formDataRef.value.validate((val: boolean) => {
+    if (val) {
+      let password: string = md5(
+        formData.value.password +
+          "gonganju" +
+          formData.value.password.split("").reverse().join("")
+      );
 
-      let params:object = {
-        client: 'web.backend',
+      let params: object = {
+        client: "web.backend",
         phone: formData.value.user,
-        password
-      }
+        password,
+      };
       interface UserInfo {
-        id: number
-        role: number
-        staffId: string
-        truename: string
-        type: number
-        username: string | number
+        id: number;
+        role: number;
+        staffId: string;
+        truename: string;
+        type: number;
+        username: string | number;
       }
-      userModel.login(params).then((da:any) => {
-        let token:string = da.data.javaToken
-        let {id,role,staffId,truename,type,username} = da.data.userInfo
-        let userInfo:UserInfo = {id,role,staffId,truename,type,username}
-        store.login(token, userInfo)
-        router.push('/')
-      })
+      userModel.login(params).then((da: any) => {
+        let token: string = da.data.javaToken;
+        let { id, role, staffId, truename, type, username } = da.data.userInfo;
+        let userInfo: UserInfo = {
+          id,
+          role,
+          staffId,
+          truename,
+          type,
+          username,
+        };
+        store.login(token, userInfo);
+        router.push("/");
+      });
     }
-  })
+  });
 };
+onMounted(() => {
+  //在登录页禁止返回
+  history.pushState(null, '', document.URL);
+  window.addEventListener("popstate", function () {
+    history.pushState(null, '', document.URL);
+  });
+});
 </script>
 
 <style lang="less" scoped>

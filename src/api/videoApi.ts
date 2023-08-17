@@ -73,6 +73,22 @@ class VideoModel extends HttpRequest {
       {method: 'POST'}
     )
   }
+  // 删除
+  deleteXtVideo(ids:number[]) {
+    return this.commonAjaxJava(
+      '/xtVideo/deleteXtVideo',
+      ids,
+      {method: 'POST'}
+    )
+  }
+  // 视频主题查询
+  getThemeSearchList(params:object) {
+    return this.commonAjaxJava(
+      '/xtTheme/getThemeSearchList',
+      params,
+      {method: 'GET', newGet: true}
+    )
+  }
 }
 
 export default new VideoModel()
