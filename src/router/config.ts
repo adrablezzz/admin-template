@@ -1,6 +1,7 @@
 import mainRoutes from './routes'
+import { RouteRecordRaw } from 'vue-router'
 
-const routes:any =  {
+const routes: router.ConfigRoutes =  {
   'videoManage': {
     name: '视频管理',
     icon: 'logo-youtube'
@@ -16,8 +17,8 @@ const routes:any =  {
     'videoCheck2': '视频审核2',
 }
 const initRoute:string = 'videoCheck'
-const mainChildrenRoutes = mainRoutes.map((subRoute:any) => {
-  return subRoute.children.map((route:any) => route.name)
+const mainChildrenRoutes = mainRoutes.map((subRoute:RouteRecordRaw) => {
+  return (subRoute?.children || []).map((route:RouteRecordRaw) => route.name)
 }).flat(Infinity)
 
 export {

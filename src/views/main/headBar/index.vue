@@ -49,14 +49,14 @@ import { inject, computed } from "vue";
 import { getRouteName } from "@/libs/util";
 
 import { useRoute } from "vue-router";
-const route: any = useRoute();
+const route: router.ConfigRoutes = useRoute();
 
 import { useStore } from "@/store";
 const store = useStore();
-const systemInfo: any = store.getSystemInfo;
-const userInfo: any = store.getUserInfo;
+const systemInfo = store.getSystemInfo;
+const userInfo = store.getUserInfo;
 
-const isCollapsed: any = inject("isCollapsed");
+const isCollapsed:any = inject("isCollapsed");
 const rotateIcon = computed(() => [
   "menu-icon",
   isCollapsed.value ? "rotate-icon" : "",

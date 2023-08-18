@@ -1,12 +1,11 @@
 import {routes} from "@/router/config";
 import hexMd5 from 'js-md5'
-import { RouteRecordName } from 'vue-router'
 import circularJSON from 'circular-json'
 
-export const getRouteName = (name: RouteRecordName | undefined = ''): string =>
+export const getRouteName = (name: string): string =>
   routes[name] instanceof Object ? (routes[name].name || name) : (routes[name] || name);
 
-export const getRouteIcon = (name: RouteRecordName | undefined = ''): string =>
+export const getRouteIcon = (name: string): string =>
   routes[name] instanceof Object ? routes[name].icon : "";
 
 export const getSignValue = (params:{[key:string]:any}):string => {

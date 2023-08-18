@@ -1,48 +1,48 @@
 interface SystemItem {
-  name: string
-  value: string
-  href: string
+  name: string;
+  value: string;
+  href: string;
+}
+interface SystemInfo {
+  systemList: SystemItem[];
+  active: string;
 }
 interface Route {
   name: string;
-  [other:string]: any
 }
 interface UserInfo {
-  id: number
-  role: number
-  staffId: string
-  truename: string
-  type: number
-  username: string | number
+  id: number;
+  role: number;
+  staffId: string;
+  truename: string;
+  type: number;
+  username: string | number;
 }
 type State = {
-  token: string
+  token: string;
   userInfo: {
-    id: number
-    role: number
-    staffId: string
-    truename: string
-    type: number
-    username: string | number
-  }
-  systemInfo: {
-    systemList: SystemItem[]
-    active: string
-  },
-  routesLog: object[]
-}
+    id: number;
+    role: number;
+    staffId: string;
+    truename: string;
+    type: number;
+    username: string | number;
+  };
+  systemInfo: SystemInfo
+  routesLog: { name: string }[];
+};
 
 type Getters = {
-  getUserInfo: (state: State) => object
-  getSystemInfo: (state: State) => SystemItem[]
-  getRoutesLog: (state: State) => object[]
-  getToken: (state: State) => string
-}
+  getUserInfo: (state: State) => UserInfo;
+  getSystemInfo: (state: State) => SystemInfo;
+  getRoutesLog: (state: State) => { name: string }[];
+  getToken: (state: State) => string;
+};
 
 type Actions = {
-  addRouteLog: (route: Route) => void
-  delRouteLog: (name: string) => number
-  clearRouteLog: (name?:string|any) => void
-  login: (token:string, userInfo:UserInfo) => void
-  logOut: () => void
-}
+  addRouteLog: (route: Route) => void;
+  delRouteLog: (name: string) => number;
+  clearRouteLog: (name?: string | any) => void;
+  login: (token: string, userInfo: UserInfo) => void;
+  logOut: () => void;
+};
