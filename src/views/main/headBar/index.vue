@@ -10,10 +10,10 @@
         class="collapsed-icon"
       ></Icon>
       <Breadcrumb class="bread-crumb">
-        <BreadcrumbItem>{{ getRouteName(route.name) }}</BreadcrumbItem>
         <BreadcrumbItem>{{
           getRouteName(route.matched[0].name)
         }}</BreadcrumbItem>
+        <BreadcrumbItem>{{ getRouteName(route.name) }}</BreadcrumbItem>
       </Breadcrumb>
     </div>
     <div class="right">
